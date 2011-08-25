@@ -26,7 +26,8 @@ This project is designed to allow your to maintain any server on no-ip.com for f
 - This file is NOT to be run on the server computer you're failsafing. That is a _BAD_ idea.
 
 --- VERSION ---
-0.1
+
+0.0.1
 
 --- DISCLAIMER ---
 
