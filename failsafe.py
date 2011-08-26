@@ -96,6 +96,10 @@ if uid != 0:
 # Checking for FNIP config file, creating if not present
 
 if not path.exists(configfile):
+	if not path.exists('%s/.fnip' % getenv('HOME')):
+		from os import mkdir
+		mkdir('%s/.fnip' % getenv('HOME'))
+		print "Created .fnip directory!"
 	print "No FNIP configuration file found at \'%s\', creating it." % configfile
 	create_new_config(configfile)
 	print "Please edit \'%s\' prior to restarting Failsafe for No-IP again." % configfile
