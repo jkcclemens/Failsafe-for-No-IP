@@ -49,7 +49,7 @@ createconfig: True ; Whether to create new config file, read above
 # Check arguments
 
 cmdline_params = argv[1:]
-opts, args = gnu_getopt(cmdline_params, 'hc:n:C:', ['help', 'config=', 'noipconfig=', 'newconfig='])
+opts, args = gnu_getopt(cmdline_params, 'hc:n:C:v', ['help', 'config=', 'noipconfig=', 'newconfig=', 'version'])
 
 for option, parameter in opts:
 	if option in ('-h', '--help'):
@@ -59,6 +59,7 @@ for option, parameter in opts:
 		print "-c, --config=\t\tSpecify FNIP configuration file."
 		print "-n, --noipconfig=\tSpecify No-IP DUC configuration file."
 		print "-C, --newconfig=\tCreate new, empty configuration file for FNIP at specified location."
+		print "-v, --version\t\tShow version of FNIP."
 		print
 		quit()
 	if option in ('-c', '--config'):
@@ -82,6 +83,8 @@ for option, parameter in opts:
 		print "Done!"
 		print
 		quit()
+	if option in ('-v', '--version'):
+		print "Failsafe for No-IP (FNIP) v%s" % version
 
 # Grab UID of user running script
 
