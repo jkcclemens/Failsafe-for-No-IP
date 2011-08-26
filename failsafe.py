@@ -85,6 +85,8 @@ for option, parameter in opts:
 		quit()
 	if option in ('-v', '--version'):
 		print "Failsafe for No-IP (FNIP) v%s" % version
+		print
+		quit()
 
 # Grab UID of user running script
 
