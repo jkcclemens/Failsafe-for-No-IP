@@ -17,8 +17,11 @@ This project is designed to allow your to maintain any server on no-ip.com for f
 4. Ensure cron is running
 	You need cron or something similar to make sure this runs every 5 minutes (or whatever you choose).
 
-5. Edit the failsafe.py file
-	Find "### IMPORTANT VARIABLES ###" and edit those. It needs your no-ip username, password, site to check, failsafe IP, etc. If you're unsure about giving the password, read the rest of the file to see that it's only used in the No-IP DUC client.
+5a. Run failsafe.py to generate a config file
+	Edit the new file at $HOME/.fnip/config.cfg to contain correct information.
+
+5b. Run failsafe.py -h to see additional options
+	This step is optional, but recommended. Get to know FNIP.
 
 6. Move the failsafe.py file to /usr/bin
 	This is optional, but very helpful. You should also rename it to failsafe.
