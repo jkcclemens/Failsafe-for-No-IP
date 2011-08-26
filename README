@@ -11,22 +11,25 @@ This project is designed to allow your to maintain any server on no-ip.com for f
 2b. Install No-IP DUC
 	Compile it, and move it to /usr/bin/. Make sure you chmod it with +x or 0777.
 
-3. Ensure cron is running
+3. Make sure nmap is installed.
+	This can be accomplished on Debian with 'apt-get install nmap'.
+
+4. Ensure cron is running
 	You need cron or something similar to make sure this runs every 5 minutes (or whatever you choose).
 
-4. Edit the failsafe.py file
+5. Edit the failsafe.py file
 	Find "### IMPORTANT VARIABLES ###" and edit those. It needs your no-ip username, password, site to check, failsafe IP, etc. If you're unsure about giving the password, read the rest of the file to see that it's only used in the No-IP DUC client.
 
-5. Move the failsafe.py file to /usr/bin
+6. Move the failsafe.py file to /usr/bin
 	This is optional, but very helpful. You should also rename it to failsafe.
 
-6. Make it executable
+7. Make it executable
 	chmod +x /usr/bin/failsafe
 
-7. Test run
+8. Test run
 	Make sure it's working.
 
-8. Set up a cron job
+9. Set up a cron job
 	To keep it running.
 
 --- PRECAUTIONS ---
