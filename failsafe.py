@@ -8,13 +8,6 @@
 # Magical version: v0.0.25
 # Written in nano! Use nano, /usr/bin/nano
 
-# /----------------\
-# |   RUNS ONCE    |
-# |   EVERY FIVE   |
-# |   MINUTES BY   |
-# |      CRON      |
-# \----------------/
-
 ### THIS WILL OVERWRITE ANY NOIP CONFIGURATION FILE ALREADY MADE!!
 # To prevent this, change the variable createconfig, below, to False. Note that, however, this may change the way Failover works if you don't follow the instructions below.
 
@@ -84,14 +77,12 @@ if path.exists('/root/.failsafeison'):
  
 # Using nmap against the server and splitting results into readable format
 
-pingresults = getoutput('ping -c 1 %s' % checksite)
-pingresults = pingresults.split('\n')
 nmapresults = getoutput('nmap -p %s %s' % (portnumber, checksite))
 nmapresults = nmapresults.split('\n')
 
 # Saving site IP
 
-oldip = pingresults[0].partition('(')
+oldip = nmapresults[2].partition('(')
 oldip = oldip[2].partition(')')
 oldip = oldip[0]
 
@@ -101,19 +92,13 @@ if not failsafeison:
 	for item in nmapresults:
 		if 'Host seems down.' in item:
 			print "RED ALERT! \'%s\' appears to be down!" % checksite
-			#print "By reason of icmp_seq timout."
 			siteisdown = True
-#		elif 'unknown host' in item:
-#			print "RED ALERT! \'%s\' appears to be down!" % checksite
-#			print "By reason of unknown host error."
-#			siteisdown = True
-#		elif '100% packet loss' in item:
-#			print "RED ALERT! \'%s\' appears to be down!" % checksite
-#			print "By reason of 100% packet loss."
-#			siteisdown = True
+		elif '0 hosts up' in item:
+			print "RED ALERT! \'%s\' appears to be down!" % checksite
+			siteisdown = True	
 else:
 	for item in nmapresults:
-		if 'Interesting ports' in item:
+		if 'Host is up' in item:
 			print 'It appears the site has come back up, restoring old IP.'
 			a = file('/root/.failsafeison', 'r')
 			oldip = a.read()
