@@ -5,7 +5,6 @@
 ### FOR ANY NO-IP SITE  ###
 ###########################
 
-# Magical version: v0.0.25
 # Written in nano! Use nano, /usr/bin/nano
 
 ### THIS WILL OVERWRITE ANY NOIP CONFIGURATION FILE ALREADY MADE!!
@@ -15,38 +14,74 @@
 # To prevent this, please run 'noip2 -C' and set up which hosts should be updated in case the checksite goes down.
 # Then, set the variable createconfig to False
 
-### IMPORTANT VARIABLES ###
-# You may touch the following.
-
-checksite     = '' # Site to check up on, no http:// or www.
-failsafeip    = '' # IP to set checksite to when it goes down
-portnumber    = 80 # Number of times to ping the checksite
-noipuser      = '' # Your No-Ip email
-noippass      = '' # Your No-Ip password
-createconfig  = True # Whether to create new config file, read above
-
 # You may not touch the following.
 
+from os import path, system, getgid, getenv
+from getopt import gnu_getopt
+from commands import getoutput
+from sys import argv
+from ConfigParser import ConfigParser
+
+version = '0.0.50'
 siteisdown = False
 failsafeison = False
 oldip = ''
-configfile = '/usr/local/etc/no-ip2.conf'
+noipconfigfile = '/usr/local/etc/no-ip2.conf'
+configfile = '%s/.fnip/config.cfg' % getenv('HOME')
 
-from os import path, system, getgid
-from commands import getoutput
-from sys import argv
+# Define config creating function
 
-# Check for config file
+def create_new_config(where):
+	if path.exists(where):
+		print "Path already exists!\nAborting."
+		quit()
+	a = open(where, 'w')
+	a.write("""[FNIP]
+checksite: example.com ; Site to check up on, no http:// or www.
+failsafeip: 12.34.56.78 ; IP to set checksite to when it goes down
+portnumber: 80 ; Number of times to ping the checksite
+noipuser: your@email.com ; Your No-Ip email
+noippass: yourpassword ; Your No-Ip password
+createconfig: True ; Whether to create new config file, read above
+""")
+	a.close()
 
-try:
-	argv[1]
-except:
-	print "No No-IP DUC config file specified. Using default."
-else:
-	if argv[1] == '-h':
-		print "Add the path to a separate No-IP DUC config file to use it instead of the default."
-	else:
-		configfile = argv[1] 
+# Check arguments
+
+cmdline_params = argv[1:]
+opts, args = gnu_getopt(cmdline_params, 'hc:n:C:', ['help', 'config=', 'noipconfig=', 'newconfig='])
+
+for option, parameter in opts:
+	if option in ('-h', '--help'):
+		print "Failsafe for No-IP (FNIP) v%s" % version
+		print
+		print "-h, --help\t\tShow this output."
+		print "-c, --config=\t\tSpecify FNIP configuration file."
+		print "-n, --noipconfig=\tSpecify No-IP DUC configuration file."
+		print "-C, --newconfig=\tCreate new, empty configuration file for FNIP at specified location."
+		print
+		quit()
+	if option in ('-c', '--config'):
+		if path.exists(parameter):
+			print "FNIP config file specified exists. Using it."
+			configfile = parameter
+		else:
+			print "FNIP config file specified does not exist. Ignoring."
+	if option in ('-n', '--noipconfig'):
+		if path.exists(parameter):
+			print "No-IP DUC config file specified exists. Using it."
+			noipconfigfile = parameter
+		else:
+			print "No-IP DUC config file specified does not exist. Ignoring."
+	if option in ('-C', '--newconfig'):
+		if not parameter:
+			print "Need location for new config file!\nAborting."
+			quit()
+		print "Creating blank config at \'%s\'" % parameter
+		create_new_config(parameter)
+		print "Done!"
+		print
+		quit()
 
 # Grab UID of user running script
 
@@ -57,6 +92,26 @@ uid = getgid()
 if uid != 0:
 	print "You need to run this as root!"
 	quit()
+
+# Checking for FNIP config file, creating if not present
+
+if not path.exists(configfile):
+	print "No FNIP configuration file found at \'%s\', creating it." % configfile
+	create_new_config(configfile)
+	print "Please edit \'%s\' prior to restarting Failsafe for No-IP again." % configfile
+	print
+	quit()
+
+# Loading config file
+
+config = ConfigParser()
+config.read(configfile)
+checksite = config.get('FNIP', 'checksite')
+failsafeip = config.get('FNIP', 'failsafeip')
+portnumber = config.get('FNIP', 'portnumber')
+noipuser = config.get('FNIP', 'noipuser')
+noippass = config.get('FNIP', 'noippass')
+createconfig = config.get('FNIP', 'createconfig')
 
 # Checking that the noip2 binary is present at /usr/bin/
 
@@ -104,7 +159,7 @@ else:
 			oldip = a.read()
 			oldip = oldip.replace('\n', '')
 			a.close()
-			print getoutput('/usr/bin/noip2 -i %s' % oldip)
+			print getoutput('/usr/bin/noip2 -c %s -i %s' % (noipconfigfile, oldip))
 			failsafeison = False
 			siteisdown = False
 
@@ -114,8 +169,8 @@ else:
 if siteisdown:
 	if not failsafeison:
 		if createconfig:
-			print getoutput('/usr/bin/noip2 -u %s -p %s -U 1 -Y -C' % (noipuser, noippass))
-		print getoutput('/usr/bin/noip2 -i %s' % failsafeip)
+			print getoutput('/usr/bin/noip2 -c %s -u %s -p %s -U 1 -Y -C' % (noipconfigfile, noipuser, noippass))
+		print getoutput('/usr/bin/noip2 -c %s -i %s' % (noipconfigfile, failsafeip))
 		failsafeison = True
 
 if failsafeison:
