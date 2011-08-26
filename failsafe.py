@@ -5,7 +5,7 @@
 ### FOR ANY NO-IP SITE  ###
 ###########################
 
-# Magical version: v0.0.1
+# Magical version: v0.0.25
 # Written in nano! Use nano, /usr/bin/nano
 
 # /----------------\
