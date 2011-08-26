@@ -1,6 +1,6 @@
 Welcome to Failsafe for No-IP!
 
-This project is designed to allow your to maintain any server on no-ip.com for free. There are a few things you need to do before you can run this.
+This project is designed to allow you to maintain any server on no-ip.com for free. There are a few things you need to do before you can run this.
 
 1. Install Python
 	The commands module is still needed, so you need a Python that has a 2.7 or 2.6 version.
