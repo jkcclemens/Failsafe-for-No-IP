@@ -8,11 +8,11 @@
 # Written in nano! Use nano, /usr/bin/nano
 
 ### THIS WILL OVERWRITE ANY NOIP CONFIGURATION FILE ALREADY MADE!!
-# To prevent this, change the variable createconfig, below, to False. Note that, however, this may change the way Failover works if you don't follow the instructions below.
+# To prevent this, change the variable createconfig, in the config file, to False. Note that, however, this may change the way Failover works if you don't follow the instructions below.
 
 ### THIS UPDATES ALL HOSTS IN YOUR NOIP ACCOUNT!
 # To prevent this, please run 'noip2 -C' and set up which hosts should be updated in case the checksite goes down.
-# Then, set the variable createconfig to False
+# Then, set the variable createconfig to False in the config file
 
 # You may not touch the following.
 
