@@ -22,7 +22,7 @@ from commands import getoutput
 from sys import argv
 from ConfigParser import ConfigParser
 
-version = '0.0.50'
+version = '0.0.55'
 siteisdown = False
 failsafeison = False
 oldip = ''
